@@ -4,6 +4,10 @@ import { useState, useMemo } from 'react';
 import { DndContext, PointerSensor, closestCorners, useSensors, useSensor, TouchSensor, KeyboardSensor } from "@dnd-kit/core"
 import { Column } from '../components/column/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import Modal from "../components/modal/Modal"
+import AddTaskModal from "../components/task/AddTaskModal"
+import DeleteTaskModal from "../components/task/DeleteTaskModal"
+import EditTaskModal from "../components/task/EditTaskModal"
 
 const FILTERS = ['all', 'active', 'completed'];
 
@@ -11,6 +15,9 @@ const TasksClient = ({allTasks}) => {
     const [tasks, setTasks] = useState(allTasks);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [deleteTask, setDeleteTask] = useState(null);
+    const [editTask,setEditTask] = useState(null);
 
     const filteredTasks = useMemo(() => {
         return tasks
@@ -59,8 +66,16 @@ const TasksClient = ({allTasks}) => {
     );
 
     const handleAddTask = async()=>{
-
+        setTasks(prev => [...prev, { ...newTask, id: crypto.randomUUID() }]);
     }
+    const handleDeleteTask = (id) => {
+        setTasks(prev => prev.filter(t => t.id !== id));
+    }
+
+    const handleSaveTask = (updatedTask) => {
+        setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
+    }
+
     return (
         <div className="min-h-screen px-4 py-8">
 
@@ -70,11 +85,12 @@ const TasksClient = ({allTasks}) => {
                 <div className="flex items-center justify-between mb-4">
                     <h1 className="text-xl font-semibold text-gray-800">All Tasks</h1>
                     <button
-                        onClick={handleAddTask}
+                        onClick={() => setIsModalOpen(true)}
                         className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all"
                     >
                         + Add Task
                     </button>
+                    
                 </div>
                 {/* search */}
                 <div className="relative mb-3">
@@ -123,8 +139,39 @@ const TasksClient = ({allTasks}) => {
                     onDragEnd={handleDragEnd}
                     collisionDetection={closestCorners}
                 >
-                    <Column tasks={filteredTasks} />
+                    <Column 
+                        tasks={filteredTasks}
+                        onEdit={(task) => setEditTask(task)}
+                        onDelete={(task) => setDeleteTask(task)}
+                     />
                 </DndContext>
+
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <AddTaskModal
+                        onClose={() => setIsModalOpen(false)}
+                        onAdd={handleAddTask}
+                    />
+                </Modal>
+
+                <Modal isOpen={!!deleteTask} onClose={() => setDeleteTask(null)}>
+                    {deleteTask && (
+                        <DeleteTaskModal
+                            task={deleteTask}
+                            onClose={() => setDeleteTask(null)}
+                            onDelete={handleDeleteTask}
+                        />
+                    )}
+                </Modal>
+
+                <Modal isOpen={!!editTask} onClose={() => setEditTask(null)}>
+                    {editTask && (
+                        <EditTaskModal
+                            task={editTask}
+                            onClose={() => setEditTask(null)}
+                            onSave={handleSaveTask}
+                        />
+                    )}
+                </Modal>
 
                 {filteredTasks.length === 0 && (
                     <div className="text-center py-16 text-gray-400">
