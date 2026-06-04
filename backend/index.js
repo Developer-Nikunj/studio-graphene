@@ -5,9 +5,16 @@ const ApiError = require('./src/utils/ApiError');
 const { connectDB } = require('./src/config/db');
 const taskRoutes  = require('./src/routes/task.routes.js')
 const errorHandler = require('./src/middlewares/error.middleware.js');
+const cors = require("cors");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 
 app.get('/', (req, res) => {
     return res.json({
