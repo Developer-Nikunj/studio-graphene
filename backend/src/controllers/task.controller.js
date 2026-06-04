@@ -5,7 +5,6 @@ const ApiError = require("../utils/ApiError");
 const { NUMBER } = require("sequelize");
 
 const getAllTasks = asyncHandler(async (req, res) => {
-
     const { limit = 30, offset = 0 } = req.query;
 
     const tasks = await taskModel.findAll({

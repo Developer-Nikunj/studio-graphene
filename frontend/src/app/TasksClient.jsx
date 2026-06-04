@@ -5,12 +5,8 @@ import { DndContext, PointerSensor, closestCorners, useSensors, useSensor, Touch
 import { Column } from '../components/column/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
-const TasksClient = () => {
-    const [tasks, setTasks] = useState([
-        { id: 1, title: "Add new 1" },
-        { id: 2, title: "Add new 2" },
-        { id: 3, title: "Add new 3" }
-    ]);
+const TasksClient = ({allTasks}) => {
+    const [tasks, setTasks] = useState(allTasks);
 
     const getTaskPos = id => tasks.findIndex(task => task.id === id);
 
@@ -45,14 +41,37 @@ const TasksClient = () => {
             coordinateGetter: sortableKeyboardCoordinates
         })
     );
+
+    const handleAddTask = async()=>{
+
+    }
     return (
-        <div>
-            <h1>My Tasks</h1>
-            <DndContext
-                sensors={sensors}
-                onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
-                <Column tasks={tasks} />
-            </DndContext>
+        <div className="min-h-screen bg-gray-50 px-4 py-8">
+
+            <div className="mx-auto">
+
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-xl font-semibold text-gray-800">All Tasks</h1>
+                    <button
+                        onClick={handleAddTask}
+                        className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all"
+                    >
+                        + Add Task
+                    </button>
+                </div>
+
+                {/* Task list */}
+                <DndContext
+                    sensors={sensors}
+                    onDragEnd={handleDragEnd}
+                    collisionDetection={closestCorners}
+                >
+                    <Column tasks={tasks} />
+                </DndContext>
+
+            </div>
+
         </div>
     )
 }
