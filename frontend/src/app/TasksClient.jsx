@@ -1,12 +1,28 @@
 "use client"
 import React from 'react'
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { DndContext, PointerSensor, closestCorners, useSensors, useSensor, TouchSensor, KeyboardSensor } from "@dnd-kit/core"
 import { Column } from '../components/column/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
+const FILTERS = ['all', 'active', 'completed'];
+
 const TasksClient = ({allTasks}) => {
     const [tasks, setTasks] = useState(allTasks);
+    const [search, setSearch] = useState('');
+    const [filter, setFilter] = useState('all');
+
+    const filteredTasks = useMemo(() => {
+        return tasks
+            .filter(task => {
+                if (filter === 'active') return !task.isCompleted;
+                if (filter === 'completed') return task.isCompleted;
+                return true;
+            })
+            .filter(task =>
+                task.title.toLowerCase().includes(search.toLowerCase())
+            );
+    }, [tasks, search, filter]);
 
     const getTaskPos = id => tasks.findIndex(task => task.id === id);
 
@@ -46,7 +62,7 @@ const TasksClient = ({allTasks}) => {
 
     }
     return (
-        <div className="min-h-screen bg-gray-50 px-4 py-8">
+        <div className="min-h-screen px-4 py-8">
 
             <div className="mx-auto">
 
@@ -60,6 +76,46 @@ const TasksClient = ({allTasks}) => {
                         + Add Task
                     </button>
                 </div>
+                {/* search */}
+                <div className="relative mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder="Search tasks..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2.5 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    />
+                    {search && (
+                        <button
+                            onClick={() => setSearch('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
+                {/* filter */}
+                <div className="flex gap-1.5 mb-5">
+                    {FILTERS.map(f => (
+                        <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-4 py-1.5 text-sm rounded-lg font-medium capitalize transition-all
+                                ${filter === f
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white border border-gray-200 text-gray-500 hover:border-blue-300 hover:text-blue-600'
+                                }`}
+                        >
+                            {f}
+                        </button>
+                    ))}
+                    <span className="ml-auto text-xs text-gray-400 self-center">
+                        {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
+                    </span>
+                </div>
 
                 {/* Task list */}
                 <DndContext
@@ -67,8 +123,15 @@ const TasksClient = ({allTasks}) => {
                     onDragEnd={handleDragEnd}
                     collisionDetection={closestCorners}
                 >
-                    <Column tasks={tasks} />
+                    <Column tasks={filteredTasks} />
                 </DndContext>
+
+                {filteredTasks.length === 0 && (
+                    <div className="text-center py-16 text-gray-400">
+                        <p className="text-4xl mb-3">📭</p>
+                        <p className="text-sm">No tasks found</p>
+                    </div>
+                )}
 
             </div>
 
