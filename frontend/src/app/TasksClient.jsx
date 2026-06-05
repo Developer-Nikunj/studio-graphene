@@ -97,7 +97,7 @@ const TasksClient = ({ allTasks }) => {
     const activeCount = tasks.filter(t => t.isActive).length;
     const completedCount = tasks.filter(t => t.isCompleted).length;
     const overdueCount = tasks.filter(t =>
-        !t.completed && t.dueDate && new Date(t.dueDate) < new Date()
+        !t?.isCompleted && t?.dueDate && new Date(t?.dueDate) < new Date()
     ).length;
     const notCompletedCount = tasks.filter(t => !t.isCompleted).length;
 

@@ -3,19 +3,28 @@ require('dotenv').config();
 const app = express();
 const ApiError = require('./src/utils/ApiError');
 const { connectDB } = require('./src/config/db');
-const taskRoutes  = require('./src/routes/task.routes.js')
+const taskRoutes = require('./src/routes/task.routes.js')
 const errorHandler = require('./src/middlewares/error.middleware.js');
 const cors = require("cors");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-    cors({
-        // origin: "http://localhost:3000",
-        origin: '*',
-        credentials: true,
-    })
-);
+const allowedOrigins = [
+    'https://opulent-capybara-pj554wr5jx5gf7p5q-3000.app.github.dev',
+    'http://localhost:3000', // for local dev
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.get('/', (req, res) => {
     return res.json({
@@ -25,7 +34,7 @@ app.get('/', (req, res) => {
 });
 
 // main routes
-app.use('/api/v1',taskRoutes);
+app.use('/api/v1', taskRoutes);
 
 
 const startServer = async () => {
