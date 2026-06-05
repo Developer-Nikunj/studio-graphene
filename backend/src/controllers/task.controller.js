@@ -40,12 +40,19 @@ const createTask = asyncHandler(async (req, res) => {
     if (!title?.trim()) {
         throw new ApiError(400, 'Title is required!!');
     }
+    const lastTask = await taskModel.findOne({
+        where: { isDeleted: false },
+        order: [["order", "DESC"]],
+    });
+
+    const order = lastTask ? lastTask.order + 1000 : 1000;
 
     const task =await taskModel.create({
         title,
         description,
         dueDate,
         isActive,
+        order,
     })
 
     if (!task) {
@@ -60,6 +67,7 @@ const createTask = asyncHandler(async (req, res) => {
         isCompleted: task.isCompleted,
         title: task.title,
         isActive: task.isActive,
+        order: task.order,
         dueDate: task.dueDate
             ? new Date(task.dueDate).toISOString().split("T")[0]
             : null,
@@ -89,28 +97,26 @@ const taskById = asyncHandler(async (req, res) => {
             id: taskId
         },
         attributes: {
-            exclude: ['updatedAt', 'order', 'isDeleted','UUID'],
+            exclude: ['updatedAt', 'isDeleted','UUID'],
         }
     });
 
     if (!task) {
         throw new ApiError(
-            400,
+            404,
             "Task not Found!!"
         )
-
     }
 
     const formattedTask = {
-        ...task.toJSON(),
-        dueDate: task.dueDate
-            ? task.dueDate.toISOString().split("T")[0]
-            : null,
-        createdAt: task.createdAt
-            ? task.createdAt.toISOString().split("T")[0]
-            : null,
-        
-    }
+    ...task.toJSON(),
+    dueDate: task.dueDate && !isNaN(new Date(task.dueDate))
+        ? new Date(task.dueDate).toISOString().split("T")[0]
+        : null,
+    createdAt: task.createdAt && !isNaN(new Date(task.createdAt))
+        ? new Date(task.createdAt).toISOString().split("T")[0]
+        : null,
+}
 
     return res.status(200).json(
         new ApiResponse(

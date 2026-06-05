@@ -45,15 +45,15 @@ const Tasks = sequelize.define('Tasks',
 )
 
 // To maintain the order
-Tasks.beforeCreate(async (task) => {
-    const lastTask = await Tasks.findOne({
-        order: [["order", "DESC"]],
-    });
+// Tasks.beforeCreate(async (task) => {
+//     const lastTask = await Tasks.findOne({
+//         order: [["order", "DESC"]],
+//     });
 
-    task.order = lastTask
-        ? lastTask.order + 1000
-        : 1000;
+//     task.order = lastTask
+//         ? lastTask.order + 1000
+//         : 1000;
 
-});
+// });
 
 module.exports = Tasks;

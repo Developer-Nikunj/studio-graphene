@@ -8,7 +8,7 @@ import Modal from "../components/modal/Modal"
 import AddTaskModal from "../components/task/AddTaskModal"
 import DeleteTaskModal from "../components/task/DeleteTaskModal"
 import EditTaskModal from "../components/task/EditTaskModal"
-import { addTask, DeleteTask,reOrderTask } from "../services/taskService"
+import { addTask, DeleteTask, reOrderTask } from "../services/taskService"
 
 const FILTERS = ['all', 'active', 'completed'];
 
@@ -23,7 +23,7 @@ const TasksClient = ({ allTasks }) => {
     const filteredTasks = useMemo(() => {
         return tasks
             .filter(task => {
-                if (filter === 'active') return !task.isCompleted;
+                if (filter === 'active') return task.isActive;
                 if (filter === 'completed') return task.isCompleted;
                 return true;
             })
@@ -31,6 +31,8 @@ const TasksClient = ({ allTasks }) => {
                 task.title.toLowerCase().includes(search.toLowerCase())
             );
     }, [tasks, search, filter]);
+
+    console.log("tasks",tasks);
 
     const getTaskPos = id => tasks.findIndex(task => task.id === id);
 
@@ -54,8 +56,8 @@ const TasksClient = ({ allTasks }) => {
             console.log("prevOrder", prevOrder, "nextOrder", nextOrder, "newOrder", newOrder);
 
             reordered[newPos] = { ...reordered[newPos], order: newOrder };
-            
-            reOrderTask(reordered[newPos].id,prevOrder,nextOrder);
+
+            reOrderTask(reordered[newPos].id, prevOrder, nextOrder);
             return reordered;
         })
     }
@@ -92,12 +94,50 @@ const TasksClient = ({ allTasks }) => {
         setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
     }
 
+    const activeCount = tasks.filter(t => t.isActive).length;
+    const completedCount = tasks.filter(t => t.isCompleted).length;
+    const overdueCount = tasks.filter(t =>
+        !t.completed && t.dueDate && new Date(t.dueDate) < new Date()
+    ).length;
+    const notCompletedCount = tasks.filter(t => !t.isCompleted).length;
+
+
     return (
         <div className="min-h-screen px-4 py-8">
 
             <div className="mx-auto">
 
                 {/* Header */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-xs text-gray-500 mb-1">Active</p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-blue-600 text-lg">🕐</span>
+                            <span className="text-2xl font-medium text-gray-800">{activeCount}</span>
+                        </div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-xs text-gray-500 mb-1">Completed</p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-green-600 text-lg">✅</span>
+                            <span className="text-2xl font-medium text-gray-800">{completedCount}</span>
+                        </div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-xs text-gray-500 mb-1">Overdue</p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-red-500 text-lg">⚠️</span>
+                            <span className="text-2xl font-medium text-gray-800">{overdueCount}</span>
+                        </div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-xs text-gray-500 mb-1">Not completed</p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-amber-500 text-lg">🔄</span>
+                            <span className="text-2xl font-medium text-gray-800">{notCompletedCount}</span>
+                        </div>
+                    </div>
+                </div>
                 <div className="flex items-center justify-between mb-4">
                     <h1 className="text-xl font-semibold text-gray-800">All Tasks</h1>
                     <button

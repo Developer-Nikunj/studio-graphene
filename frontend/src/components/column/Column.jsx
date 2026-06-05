@@ -11,8 +11,8 @@ export const Column = ({ tasks, onEdit, onDelete }) => {
                 <Task 
                     id={task.id} 
                     title={task.title} 
-                    isCompleted={task.isCompleted} 
-                    dueDate={task.dueDate}  
+                    isCompleted={task?.isCompleted} 
+                    dueDate={task?.dueDate}  
                     key={task.id}
                     onEdit={() => onEdit(task)}
                     onDelete={() => onDelete(task)}
