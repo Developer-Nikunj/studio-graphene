@@ -47,7 +47,7 @@ The frontend is developed using Next.js to leverage both SSR and CSR. Tailwind C
 ## 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/developer-nikunj/studio-graphene
 ```
 
 ## 2. Install Dependencies
