@@ -11,7 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        // origin: "http://localhost:3000",
+        origin: '*',
         credentials: true,
     })
 );
@@ -29,7 +30,7 @@ app.use('/api/v1',taskRoutes);
 
 const startServer = async () => {
     try {
-        const PORT = process.env.PORT;
+        const PORT = process.env.PORT || 3001;
         await connectDB();
 
         app.listen(PORT, () => {

@@ -1,15 +1,19 @@
 import React, { useState } from 'react'
 
 const AddTaskModal = ({ onClose, onAdd }) => {
-    const [title, setTitle] = useState('');
-    const [dueDate, setDueDate] = useState('');
+    const [newTask, setNewTask] = useState({
+        title: "",
+        description: "",
+        dueDate: "",
+        active: false,
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!title.trim()) return;
-        onAdd({ title, dueDate, isCompleted: false });
+        if (!newTask.title.trim()) return;
+        onAdd({ ...newTask, isCompleted: false });
         onClose();
-    }
+    };
 
     return (
         <div>
@@ -31,20 +35,41 @@ const AddTaskModal = ({ onClose, onAdd }) => {
                     <input
                         type="text"
                         placeholder="Task title..."
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={newTask.title}
+                        onChange={e => setNewTask({ ...newTask, title: e.target.value })}
+                        className="w-full px-3 py-2.5 text-black text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                         autoFocus
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                        placeholder="Task description..."
+                        value={newTask.description}
+                        onChange={e => setNewTask({ ...newTask, description: e.target.value })}
+                        className="w-full px-3 py-2.5 text-sm text-black border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                        rows={3}
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
                     <input
                         type="date"
-                        value={dueDate}
-                        onChange={e => setDueDate(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={newTask.dueDate}
+                        onChange={e => setNewTask({ ...newTask, dueDate: e.target.value })}
+                        className="w-full px-3 py-2.5 text-sm text-black border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Active</label>
+                    <div
+                        onClick={() => setNewTask({ ...newTask, active: !newTask.active })}
+                        className={`relative inline-flex items-center w-11 h-6 rounded-full cursor-pointer transition-colors duration-200 ${newTask.active ? 'bg-blue-600' : 'bg-gray-200'}`}
+                    >
+                        <span
+                            className={`inline-block w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-200 ${newTask.active ? 'translate-x-6' : 'translate-x-1'}`}
+                        />
+                    </div>
                 </div>
 
                 {/* Actions */}
@@ -64,7 +89,7 @@ const AddTaskModal = ({ onClose, onAdd }) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddTaskModal
+export default AddTaskModal;

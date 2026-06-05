@@ -8,6 +8,7 @@ import Modal from "../components/modal/Modal"
 import AddTaskModal from "../components/task/AddTaskModal"
 import DeleteTaskModal from "../components/task/DeleteTaskModal"
 import EditTaskModal from "../components/task/EditTaskModal"
+import {addTask,DeleteTask,updateTask } from "../services/taskService"
 
 const FILTERS = ['all', 'active', 'completed'];
 
@@ -65,10 +66,12 @@ const TasksClient = ({allTasks}) => {
         })
     );
 
-    const handleAddTask = async()=>{
-        setTasks(prev => [...prev, { ...newTask, id: crypto.randomUUID() }]);
+    const handleAddTask = async(newTask)=>{
+        const saved = await addTask(newTask);
+        setTasks(prev => [...prev, saved.data]);
     }
-    const handleDeleteTask = (id) => {
+    const handleDeleteTask = async(id) => {
+        await DeleteTask(id);
         setTasks(prev => prev.filter(t => t.id !== id));
     }
 
