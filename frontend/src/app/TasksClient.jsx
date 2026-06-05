@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DndContext, PointerSensor, closestCorners, useSensors, useSensor, TouchSensor, KeyboardSensor } from "@dnd-kit/core"
 import { Column } from '../components/column/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -9,6 +9,7 @@ import AddTaskModal from "../components/task/AddTaskModal"
 import DeleteTaskModal from "../components/task/DeleteTaskModal"
 import EditTaskModal from "../components/task/EditTaskModal"
 import { addTask, DeleteTask, reOrderTask } from "../services/taskService"
+import NavbarSummary from '../components/NavbarSummary/NavbarSummary';
 
 const FILTERS = ['all', 'active', 'completed'];
 
@@ -19,6 +20,8 @@ const TasksClient = ({ allTasks }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteTask, setDeleteTask] = useState(null);
     const [editTask, setEditTask] = useState(null);
+
+    const [mounted, setMounted] = useState(false);
 
     const filteredTasks = useMemo(() => {
         return tasks
@@ -32,7 +35,7 @@ const TasksClient = ({ allTasks }) => {
             );
     }, [tasks, search, filter]);
 
-    console.log("tasks",tasks);
+    // console.log("tasks",tasks);
 
     const getTaskPos = id => tasks.findIndex(task => task.id === id);
 
@@ -102,42 +105,24 @@ const TasksClient = ({ allTasks }) => {
     const notCompletedCount = tasks.filter(t => !t.isCompleted).length;
 
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    if (!mounted) return null;
+
+
     return (
         <div className="min-h-screen px-4 py-8">
 
             <div className="mx-auto">
 
                 {/* Header */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">Active</p>
-                        <div className="flex items-center gap-2">
-                            <span className="text-blue-600 text-lg">🕐</span>
-                            <span className="text-2xl font-medium text-gray-800">{activeCount}</span>
-                        </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">Completed</p>
-                        <div className="flex items-center gap-2">
-                            <span className="text-green-600 text-lg">✅</span>
-                            <span className="text-2xl font-medium text-gray-800">{completedCount}</span>
-                        </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">Overdue</p>
-                        <div className="flex items-center gap-2">
-                            <span className="text-red-500 text-lg">⚠️</span>
-                            <span className="text-2xl font-medium text-gray-800">{overdueCount}</span>
-                        </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">Not completed</p>
-                        <div className="flex items-center gap-2">
-                            <span className="text-amber-500 text-lg">🔄</span>
-                            <span className="text-2xl font-medium text-gray-800">{notCompletedCount}</span>
-                        </div>
-                    </div>
-                </div>
+                <NavbarSummary
+                    activeCount={activeCount}
+                    completedCount={completedCount}
+                    overdueCount={overdueCount}
+                    notCompletedCount={notCompletedCount}
+                />
                 <div className="flex items-center justify-between mb-4">
                     <h1 className="text-xl font-semibold text-gray-800">All Tasks</h1>
                     <button

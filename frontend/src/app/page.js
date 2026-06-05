@@ -8,7 +8,7 @@ import {getTasks} from "../services/taskService"
 
 export default async function Home() {
   const tasks = await getTasks(); 
-  console.log("Tasks",tasks);
+  // console.log("Tasks",tasks);
 
   return (
     <div className="min-h-screen flex flex-col">

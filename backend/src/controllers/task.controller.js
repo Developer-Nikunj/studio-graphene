@@ -258,7 +258,7 @@ const reOrderTask = asyncHandler(async(req,res)=>{
         title: task.title,
         order: task.order,
         isActive: task.isActive,
-        dueDate: task.dueDate
+        dueDate: task.dueDate && !isNaN(new Date(task.dueDate))
             ? new Date(task.dueDate).toISOString().split("T")[0]
             : null,
     };
