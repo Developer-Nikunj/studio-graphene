@@ -54,3 +54,14 @@ export async function updateTask(id, updatedTask) {
     if (!res.ok) throw new Error("Failed to update task");
     return res.json();
 }
+
+
+export async function reOrderTask(taskId,previousOrder,nextOrder) {
+    const res = await fetch(`${BASE_URL}/re-order`,{
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({taskId,previousOrder,nextOrder}),
+    })
+    if(!res.ok) throw new Error("Failed to Reorder");
+    return res.json();
+}

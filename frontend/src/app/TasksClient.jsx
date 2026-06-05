@@ -8,17 +8,17 @@ import Modal from "../components/modal/Modal"
 import AddTaskModal from "../components/task/AddTaskModal"
 import DeleteTaskModal from "../components/task/DeleteTaskModal"
 import EditTaskModal from "../components/task/EditTaskModal"
-import {addTask,DeleteTask,updateTask } from "../services/taskService"
+import { addTask, DeleteTask,reOrderTask } from "../services/taskService"
 
 const FILTERS = ['all', 'active', 'completed'];
 
-const TasksClient = ({allTasks}) => {
+const TasksClient = ({ allTasks }) => {
     const [tasks, setTasks] = useState(allTasks);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteTask, setDeleteTask] = useState(null);
-    const [editTask,setEditTask] = useState(null);
+    const [editTask, setEditTask] = useState(null);
 
     const filteredTasks = useMemo(() => {
         return tasks
@@ -42,23 +42,36 @@ const TasksClient = ({allTasks}) => {
         setTasks(tasks => {
             const originalPos = getTaskPos(active.id)
             const newPos = getTaskPos(over.id)
+            const reordered = arrayMove(tasks, originalPos, newPos);
+            const prevTask = reordered[newPos - 1] || null;
+            const nextTask = reordered[newPos + 1] || null;
 
-            return arrayMove(tasks, originalPos, newPos)
+            const prevOrder = prevTask ? prevTask.order : 0;
+            const nextOrder = nextTask ? nextTask.order : prevOrder + 2000;
+
+            const newOrder = (prevOrder + nextOrder) / 2;
+
+            console.log("prevOrder", prevOrder, "nextOrder", nextOrder, "newOrder", newOrder);
+
+            reordered[newPos] = { ...reordered[newPos], order: newOrder };
+            
+            reOrderTask(reordered[newPos].id,prevOrder,nextOrder);
+            return reordered;
         })
     }
-    
+
     const sensors = useSensors(
         useSensor(PointerSensor,
             {
-                activationConstraint:{
-                    distance:10,
+                activationConstraint: {
+                    distance: 10,
                 }
             }
         ),
-        useSensor(TouchSensor,{
-            activationConstraint:{
-                delay:250,
-                tolerance:5,
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 250,
+                tolerance: 5,
             }
         }),
         useSensor(KeyboardSensor, {
@@ -66,11 +79,11 @@ const TasksClient = ({allTasks}) => {
         })
     );
 
-    const handleAddTask = async(newTask)=>{
+    const handleAddTask = async (newTask) => {
         const saved = await addTask(newTask);
         setTasks(prev => [...prev, saved.data]);
     }
-    const handleDeleteTask = async(id) => {
+    const handleDeleteTask = async (id) => {
         await DeleteTask(id);
         setTasks(prev => prev.filter(t => t.id !== id));
     }
@@ -93,7 +106,7 @@ const TasksClient = ({allTasks}) => {
                     >
                         + Add Task
                     </button>
-                    
+
                 </div>
                 {/* search */}
                 <div className="relative mb-3">
@@ -142,11 +155,11 @@ const TasksClient = ({allTasks}) => {
                     onDragEnd={handleDragEnd}
                     collisionDetection={closestCorners}
                 >
-                    <Column 
+                    <Column
                         tasks={filteredTasks}
                         onEdit={(task) => setEditTask(task)}
                         onDelete={(task) => setDeleteTask(task)}
-                     />
+                    />
                 </DndContext>
 
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
