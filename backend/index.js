@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
     'https://opulent-capybara-pj554wr5jx5gf7p5q-3000.app.github.dev',
+    'https://studio-graphene-ashy.vercel.app',
     'http://localhost:3000', // for local dev
 ];
 
