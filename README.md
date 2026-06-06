@@ -31,7 +31,7 @@ A full-stack task management application that allows users to create, update, de
 * SQLite3 ----> PostgreSql (to deploy on render)
 * Sequelize ORM
 
-The backend is built as a separate service using SQLite as a lightweight file-based database. Sequelize ORM is used for data modeling and database operations.
+The backend is built as a separate service using PostgreSQL as the primary database. Sequelize ORM is used for data modeling and database operations. The project was initially developed with SQLite for local development and later migrated to PostgreSQL for production deployment on Render.
 
 ## Frontend
 
