@@ -76,7 +76,7 @@ Run the above command separately in both frontend and backend folders.
 ## Base URL
 
 ```http
-/api/v1
+https://backend-t3b9.onrender.com
 ```
 
 ---
@@ -86,7 +86,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `GET`
 
 ```http
-/api/v1/task
+https://backend-t3b9.onrender.com/api/v1/task
 ```
 
 ### Sample Response
@@ -116,7 +116,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `POST`
 
 ```http
-/api/v1/task
+https://backend-t3b9.onrender.com/api/v1/task
 ```
 
 ### Request Body
@@ -154,7 +154,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `GET`
 
 ```http
-/api/v1/task/:taskId
+https://backend-t3b9.onrender.com/api/v1/task/:taskId
 ```
 
 ### Sample Response
@@ -182,7 +182,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `PUT`
 
 ```http
-/api/v1/task/:taskId
+https://backend-t3b9.onrender.com/api/v1/task/:taskId
 ```
 
 ### Request Body
@@ -219,7 +219,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `DELETE`
 
 ```http
-/api/v1/task/:taskId
+https://backend-t3b9.onrender.com/api/v1/task/:taskId
 ```
 
 ### Sample Response
@@ -242,7 +242,7 @@ Run the above command separately in both frontend and backend folders.
 **Method:** `POST`
 
 ```http
-/api/v1/re-order
+https://backend-t3b9.onrender.com/api/v1/re-order
 ```
 
 ### Request Body
