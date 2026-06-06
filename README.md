@@ -4,7 +4,7 @@ A full-stack task management application that allows users to create, update, de
 
 ## Demo
 
-🔗 **Live Demo:** *Add your deployed URL here*
+🔗 **Live Demo:** *https://studio-graphene-ashy.vercel.app/*
 
 ---
 
@@ -18,6 +18,7 @@ A full-stack task management application that allows users to create, update, de
 * Drag & Drop Task Reordering
 * Task Status Management
 * Responsive UI
+* After Drag and Drop , the tasks maintain that order, even after refresh.
 
 ---
 
@@ -27,7 +28,7 @@ A full-stack task management application that allows users to create, update, de
 
 * Node.js
 * Express.js
-* SQLite3
+* SQLite3 ----> PostgreSql (to deploy on render)
 * Sequelize ORM
 
 The backend is built as a separate service using SQLite as a lightweight file-based database. Sequelize ORM is used for data modeling and database operations.
