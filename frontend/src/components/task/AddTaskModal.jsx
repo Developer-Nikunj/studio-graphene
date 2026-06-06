@@ -32,9 +32,9 @@ const AddTaskModal = ({ onClose, onAdd }) => {
         onAdd({
             ...newTask,
             title: newTask.title.trim(),
-            description: newTask.description?.trim() || '',
+            description: newTask?.description?.trim() || '',
             isCompleted: false,
-            dueDate: newTask.dueDate || localDate,
+            dueDate: newTask?.dueDate ? newTask?.dueDate : localDate,
         });
         onClose();
     };
