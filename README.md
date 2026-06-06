@@ -39,7 +39,9 @@ The backend is built as a separate service using SQLite as a lightweight file-ba
 * Tailwind CSS
 * DnD Kit
 
-The frontend is developed using Next.js to leverage both SSR and CSR. Tailwind CSS is used for styling, while DnD Kit enables drag-and-drop functionality.
+The frontend is developed using Next.js to leverage both SSR and CSR. Tailwind CSS is used for styling, while DnD Kit enables drag-and-drop functionality. 
+
+(Saw Youtube tutorial on onDnd kit).
 
 ---
 
