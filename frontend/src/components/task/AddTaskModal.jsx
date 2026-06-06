@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 
 const AddTaskModal = ({ onClose, onAdd }) => {
+    const today = new Date();
+    const localDate = new Date(
+        today.getTime() - today.getTimezoneOffset() * 60000
+    )
+        .toISOString()
+        .split("T")[0];
+
     const [newTask, setNewTask] = useState({
         title: "",
         description: "",
-        dueDate: "",
+        dueDate: localDate,
         isActive: true,
     });
     const [errors, setErrors] = useState({});
